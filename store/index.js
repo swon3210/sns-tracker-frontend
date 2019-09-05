@@ -1,71 +1,77 @@
 import db from '~/fb.js'
 
 export const state = () => ({
-  instagram_users: '',
-  instagram_posts: '',
-  current_target: null,
+  users: [],
+  posts: [],
+  current_target: {},
 });
 
 export const mutations = {
-  init_users (state, payload) {
-    state.instagram_users = payload;
+  initUsers (state, payload) {
+    state.users = payload;
   },
-  init_posts (state, payload) {
-    state.instagram_posts = payload;
+  initPosts (state, payload) {
+    state.posts = payload;
   },
-  change_user (state, payload) {
+  changeTarget (state, payload) {
     state.current_target = payload;
   }
 };
 
-export const actions = {
-  async nuxtServerInit ({ commit }, context) {
-
-    await db.collection("instagram_users").onSnapshot(res => {
-      const changes = res.docChanges();
-
-      let instagram_users = [];
-
-      changes.forEach(change => {
-
-        const fb_data = change.doc.data();
-
-        if (change.type === 'added') {
-          const obj = {
-            id: change.doc.id,
-            ...fb_data
-          }
-          instagram_users.push(obj)
-        }
-      })
-
-      commit('init_users', instagram_users);
-
-    });
-
-    await db.collection("instagram_posts").onSnapshot(res => {
-      const changes = res.docChanges();
-
-      let instagram_posts = [];
-
-      changes.forEach(change => {
-
-        const fb_data = change.doc.data();
-
-        if (change.type === 'added') {
-          const obj = {
-            id: change.doc.id,
-            ...fb_data
-          }
-          instagram_posts.push(obj)
-        }
-      })
-
-      commit('init_posts', instagram_posts);
-
-    });
-
-    console.log()
+export const getters = {
+  current_posts (state) {
+    return state.posts.filter(x => x.user_id === state.current_target.id);
   }
+};
+
+export const actions = {
+  // nuxtServerInit: async ({ commit }, context) => {
+
+  //   await db.collection("instagram_users").onSnapshot(res => {
+  //     const changes = res.docChanges();
+
+  //     let users = [];
+
+  //     changes.forEach(change => {
+
+  //       const fb_data = change.doc.data();
+
+  //       if (change.type === 'added') {
+  //         const obj = {
+  //           id: change.doc.id,
+  //           ...fb_data
+  //         }
+  //         users.push(obj)
+  //       }
+  //     })
+
+  //     commit('initUsers', users);
+
+  //   });
+
+  //   await db.collection("instagram_posts").onSnapshot(res => {
+  //     const changes = res.docChanges();
+
+  //     let posts = [];
+
+  //     changes.forEach(change => {
+
+  //       const fb_data = change.doc.data();
+
+  //       if (change.type === 'added') {
+  //         const obj = {
+  //           id: change.doc.id,
+  //           ...fb_data
+  //         }
+  //         posts.push(obj)
+  //       }
+  //     })
+
+  //     commit('initPosts', posts);
+
+  //   });
+
+  //   console.log()
+  // }
 };
 

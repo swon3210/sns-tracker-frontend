@@ -1,17 +1,19 @@
 <template>
   <v-dialog light max-width="600px" v-model="dialog">
-    <v-btn 
-      fixed
-      dark
-      fab
-      bottom
-      right
-      color="red"
-      slot="activator"
-      class="success"
-    >
-      <v-icon>person</v-icon>
-    </v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn 
+        fixed
+        dark
+        fab
+        bottom
+        right
+        color="lightgreen"
+        class="success"
+        v-on="on"
+      >
+        <v-icon>person</v-icon>
+      </v-btn>
+    </template>
     <v-card>
       <v-card-title>
         <h2>트래킹 대상 추가하기</h2>
@@ -20,7 +22,7 @@
         <v-form class="px-3" ref="form">
           <v-text-field label="아이디" v-model="title" prepend-icon="person" :rules="inputRules"></v-text-field>
           
-          <v-btn flat class="success mx-0 mt-3" @click="submit(title)" :loading="loading">트래킹 시작</v-btn>
+          <v-btn text class="success mx-0 mt-3" @click="submit(title)" :loading="loading">트래킹 시작</v-btn>
         </v-form>
       </v-card-text>      
     </v-card>
@@ -48,10 +50,11 @@ export default {
       if (this.$refs.form.validate()) {
         this.loading = true;
         
-        this.$axios.get("https://us-central1-my-user-project-249107.cloudfunctions.net/tracker/crawler/"+name).then(res => {
+        this.$axios.get("https://us-central1-my-user-project-249107.cloudfunctions.net/tracker/"+name).then(res => {
           console.log(res);
-          alert('완료!');
           this.loading = false;
+        }).catch(err => {
+          console.log(err);
         })
 
       }

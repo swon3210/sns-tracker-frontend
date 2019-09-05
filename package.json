@@ -10,9 +10,11 @@
     "start": "nuxt start",
     "generate": "nuxt generate"
   },
+  "proxy": "https://us-central1-my-user-project-249107.cloudfunctions.net/tracker/",
   "dependencies": {
     "firebase": "^6.5.0",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "vue-firestore": "^0.3.22"
   },
   "devDependencies": {
     "@nuxtjs/axios": "^5.6.0",

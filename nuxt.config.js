@@ -48,12 +48,7 @@ export default {
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
-  axios: {
-    proxy: true,
-  },
-  proxy: {
-    api: "http://13.124.229.15:8081/"
-  },
+ 
   /*
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module

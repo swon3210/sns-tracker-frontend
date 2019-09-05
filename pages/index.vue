@@ -1,101 +1,50 @@
 <template>
-  <div>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      
-    >
-      <v-list>
-        <v-list-tile
-          v-for="item in items"
-          :key="item.id"
-          router
-          exact
-          @click="change_target(item.id)"
-        >
-          <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title" />
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-
-    <Popup></Popup>
-
-    <v-toolbar
-      :clipped-left="clipped"
-      fixed
-      app
-      flat
-      color='red'
-      dark
-    >
-      <v-toolbar-side-icon @click="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>{{ `chevron_${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>web</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>remove</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>menu</v-icon>
-      </v-btn>
-    </v-toolbar>
-
-    <v-container
-      fluid
-    >
-      <v-row        
-      >
-        <v-col
-          v-for="post in posts" 
-          :key="post.id"
-          :cols="4"
-        >
-          <Profile
-            v-if="post.user_id === current_target.id"
-            :caption="post.caption"
-            :imgSrc="post.image_url"
-          />
-        </v-col>      
-      </v-row>
-    </v-container>
-  </div>
-  
+  <v-row>
+    <Popup />
+    <v-col cols="12" md="8" offset-md="2" sm="10" offset-sm="1">
+      <v-card>
+        <v-container fluid>
+          <v-row
+          >
+            <v-col
+              v-for="post in current_posts"
+              :key="post.id"
+              class="d-flex child-flex"
+              sm="6"
+              md="4"
+            >
+              <v-card flat tile class="d-flex">
+                <v-img
+                  :src="post.image_url"
+                  aspect-ratio="1"
+                  class="grey lighten-2"
+                >
+                  <template v-slot:placeholder>
+                    <v-row
+                      class="fill-height ma-0"
+                      align="center"
+                      justify="center"
+                    >
+                      <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                    </v-row>
+                  </template>
+                </v-img>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapGetters } from 'vuex';
 import db from '~/fb.js'
 
 export default {
   data() {
     return {
-      posts: [],
-      users: [],
-      current_target: null,
       clipped: false,
       drawer: false,
       fixed: false,
@@ -113,53 +62,16 @@ export default {
     }
   },
   computed: {
-    
+    ...mapState({
+      current_target: state => state.current_target,
+      posts: state => state.posts
+    }),
+    ...mapGetters(['current_posts'])
   },
   created() {
     // 일단 하자.
-    db.collection("instagram_users").onSnapshot(res => {
-      const changes = res.docChanges();
-
-      changes.forEach(change => {
-
-        const fb_data = change.doc.data();
-
-        if (change.type === 'added') {
-          const obj = {
-            id: change.doc.id,
-            ...fb_data
-          }
-
-          const nav_obj = {
-            id: change.doc.id,
-            icon: 'person',
-            title: fb_data.full_name,
-          }
-
-          this.users.push(obj);
-          this.items.push(nav_obj);
-        }
-      })
-
-      this.current_target = this.users[0]
-    });
-
-    db.collection("instagram_posts").onSnapshot(res => {
-      const changes = res.docChanges();
-
-      changes.forEach(change => {
-
-        const fb_data = change.doc.data();
-
-        if (change.type === 'added') {
-          const obj = {
-            id: change.doc.id,
-            ...fb_data
-          }
-          this.posts.push(obj)
-        }
-      })
-    });
+    // 초기값을 null로 잡으면 안 되겠구나...
+    
   },
   components: {
     // Gallery: () => import("~/components/Gallery"),
@@ -167,8 +79,7 @@ export default {
     Popup: () => import("~/components/Popup"),
   },
   methods: {
-    change_target (target_id) {
-      this.current_target = this.users.find(x => x.id === target_id);
+    testMethod () {
     }
   },
 }
