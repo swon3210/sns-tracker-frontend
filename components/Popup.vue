@@ -50,11 +50,12 @@ export default {
       if (this.$refs.form.validate()) {
         this.loading = true;
         
-        this.$axios.get("https://us-central1-my-user-project-249107.cloudfunctions.net/tracker/"+name).then(res => {
+        this.$axios.get("https://us-central1-my-user-project-249107.cloudfunctions.net/tracker/"+name).catch(err => {
+          console.log(err);
+          this.loading = false;
+        }).then(res => {
           console.log(res);
           this.loading = false;
-        }).catch(err => {
-          console.log(err);
         })
 
       }

@@ -132,17 +132,20 @@ export default {
           this.items.push(nav_obj);
           user_nav_list.push(nav_obj);
           user_info_list.push(user_obj);
-        } else if (change.type === 'added') {
+        } else if (change.type === 'modified') {
           
+        } else if (change.type === 'removed') {
+
         }
       })
 
+      console.log('유저 리스트: ', user_info_list);
+
       // 현재 유저와 유저 목록 초기화
+
+      // 아하 이걸 통해 넣는게 아니라 vuex 상태에 있는 배열에 직접 추가해야 겠구만
       this.changeTarget(user_info_list[0]);
       this.initUsers(user_info_list);
-
-      
-      
     });
 
     db.collection("instagram_posts").onSnapshot(res => {
@@ -158,8 +161,14 @@ export default {
             ...fb_data
           }
           posts.push(obj)
+        } else if (change.type === 'modified') {
+          
+        } else if (change.type === 'removed') {
+          
         }
       })
+
+      console.log('포스트: ', posts)
 
       this.initPosts(posts)
     });
