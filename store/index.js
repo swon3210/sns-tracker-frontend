@@ -8,13 +8,13 @@ export const state = () => ({
 
 export const mutations = {
   initUsers (state, payload) {
-    state.users = payload;
+    state.users.push(payload);
   },
   initPosts (state, payload) {
-    state.posts = payload;
+    state.posts.push(payload);
   },
   changeTarget (state, payload) {
-    state.current_target = payload;
+    state.current_target = state.users.filter(x => x.id = payload);
   }
 };
 
